@@ -1,4 +1,3 @@
-import numpy
 import pandas as pd
 # loading the class data from the package pandas_datareader
 from pandas_datareader import data
@@ -20,7 +19,7 @@ goog_data = data.DataReader('GOOG', start_date, end_date)
 # Time to get the signal for actually performing a buy low sell high trade, based on the adjusted closing price
 goog_data_signal = pd.DataFrame(index=goog_data.index)
 # Set the 'price' column of goog_data_signal data frame equal to goog_data data frame 'adjusted price'
-goog_data_signal['price'] = goog_data['Adj Close'].to_numpy()
+goog_data_signal['price'] = goog_data['Adj Close']
 # Get the daily difference of the 'adjusted price' for each day
 goog_data_signal['daily_difference'] = goog_data_signal['price'].diff()
 # If the daily difference is positive we're going to set the signal to 1, if negative 0
@@ -59,6 +58,7 @@ positions = pd.DataFrame(index=goog_data_signal.index).fillna(0.0)
 portfolio = pd.DataFrame(index=goog_data_signal.index).fillna(0.0)
 
 positions['GOOG'] = goog_data_signal['signal']
+# Axis=0 means we are applying the multiplication to all rows of a column, in this case 'GOOG' column
 portfolio['positions'] = (positions.multiply(goog_data_signal['price'], axis=0))
 portfolio['cash'] = initial_capital - (positions.diff().multiply(goog_data_signal['price'], axis=0)).cumsum()
 portfolio['total'] = portfolio['positions'] + portfolio['cash']
