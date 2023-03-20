@@ -1,4 +1,3 @@
-import statistics as stats
 import pandas as pd
 from pandas_datareader import data
 import yfinance as yfin
